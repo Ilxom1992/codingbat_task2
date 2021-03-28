@@ -1,48 +1,52 @@
 package com.example.demo.controller;
+
 import com.example.demo.payload.ApiResponse;
-import com.example.demo.payload.UserDto;
-import com.example.demo.service.UserService;
+import com.example.demo.payload.SectionDto;
+import com.example.demo.service.SectionService;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+
 @RestController
-@RequestMapping(value = "/api/user")
-public class UserController {
+@RequestMapping("/api/section")
+public class SectionController {
+  final SectionService sectionService;
 
-    final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public SectionController(SectionService sectionService) {
+        this.sectionService = sectionService;
     }
+
     //  CREATE
     @PostMapping
-    public ResponseEntity<ApiResponse> add(@Valid @RequestBody UserDto userDto){
-        return ResponseEntity.ok(userService.addUser(userDto));
+    public HttpEntity<ApiResponse> add(@Valid @RequestBody SectionDto sectionDto){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(sectionService.addSection(sectionDto));
     }
     //READ
     @GetMapping
-    public ResponseEntity<ApiResponse> get(){
-        return ResponseEntity.ok(userService.getAllUser());
+    public HttpEntity<ApiResponse> get(){
+        return ResponseEntity.ok(sectionService.get());
     }
     //UPDATE
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<ApiResponse> edit(@Valid @RequestBody UserDto userDto,@PathVariable Integer id){
-        return ResponseEntity.ok(userService.edit(id,userDto));
+    @PutMapping(value = "/id")
+    public HttpEntity<ApiResponse> edit(@PathVariable Integer id, @Valid @RequestBody SectionDto sectionDto ){
+        return ResponseEntity.ok().body(sectionService.edit(id,sectionDto));
     }
     //DELETE
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<ApiResponse> delete(@PathVariable Integer id){
-        return ResponseEntity.ok(userService.delete(id));
+    public HttpEntity<ApiResponse> delete(@PathVariable Integer id){
+        return ResponseEntity.ok(sectionService.delete(id));
     }
     //READ BY ID
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ApiResponse> getById(@PathVariable Integer id){
-        return ResponseEntity.ok(userService.getById(id));
+    public HttpEntity<ApiResponse> getById(@PathVariable Integer id){
+        return ResponseEntity.ok(sectionService.getById(id));
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -56,4 +60,6 @@ public class UserController {
         });
         return errors;
     }
+
+
 }

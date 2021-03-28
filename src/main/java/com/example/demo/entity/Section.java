@@ -21,5 +21,9 @@ public class Section {
     private Course course;
     private String description;
 
-
+    public Section(String name, Course course, String description) {
+        this.name = name;
+        this.course = course;
+        this.description = description;
+    }
 }
